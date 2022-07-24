@@ -205,6 +205,9 @@ mode "belden" {
   bindsym $mod+a focus parent
   # focus the child container
   bindsym $mod+Shift+a focus child
+
+  # window switcher
+  bindsym $mod+space exec "rofi -modi window -show window"
 }
 bindsym $mod+r mode "belden"
 
