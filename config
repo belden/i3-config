@@ -35,6 +35,7 @@ exec --no-startup-id dex --autostart --environment i3
 exec --no-startup-id nm-applet
 
 include config.d/multimedia-keys.conf
+include config.d/desktop.conf
 
 # Use Mouse+$mod to drag floating windows to their wanted position
 floating_modifier $mod
@@ -159,3 +160,4 @@ bar {
 
 include config.d/swap-mode.conf
 bindsym $mod+Shift+i mark --add "swapee"; mode "swap"
+
