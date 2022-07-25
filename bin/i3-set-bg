@@ -1,0 +1,8 @@
+#!/bin/bash
+
+gnome_bg_uri=$(gsettings get org.gnome.desktop.background picture-uri | tr -d "'" | sed 's,file://,,')
+
+chosen=${1:-$gnome_bg_uri}
+
+#feh --no-xinerama --bg-center $chosen
+feh --bg-scale $chosen
