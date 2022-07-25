@@ -123,6 +123,7 @@ bindsym $mod+r mode "belden"
 bar {
         status_command i3blocks -c ~/.config/i3/config.d/i3blocks.conf
 }
+bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 
 include config.d/swap-mode.conf
 bindsym $mod+Shift+i mark --add "swapee"; mode "swap"
