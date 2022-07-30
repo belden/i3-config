@@ -106,6 +106,7 @@ bindsym $mod+a focus parent
 bindsym $mod+Shift+a focus child
 
 include config.d/workspaces.conf
+include config.d/desktops.conf
 
 # reload the configuration file
 bindsym $mod+Shift+c reload
