@@ -1,0 +1,27 @@
+#!/bin/bash
+
+function xfont::set() {
+  local new_dpi=${1:-96}; shift
+  xrdb -merge <(cat <<.
+Xft.dpi: $new_dpi
+.
+)
+}
+
+function xfont::scale() {
+  local op=$1; shift
+  local val=$1; shift
+
+  local dpi=$(xrdb -get Xft.dpi)
+  dpi=$(( $(( ${dpi:-96} * $op )) / $val ))
+  xfont::set $dpi
+}
+
+direction=${1:-up}
+
+case $direction in
+  up ) xfont::scale 11 10 ;;
+  down ) xfont::scale 10 11 ;;
+  default) xfont::set 192 ;;
+  * ) echo "usage: xfont-scale [up | down]" 1>&2 ;;
+esac
