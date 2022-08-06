@@ -1,0 +1,45 @@
+#!/bin/bash
+
+# xinput list
+# https://unix.stackexchange.com/a/393013
+# https://www.iboard.cc/2020/andi/linux/i3/2020/03/20/i3xtermAndScrolling.html
+
+hardware_name='Kensington Slimblade Trackball' # this is my hardware, change to suit your setup
+scrolling_prop='Natural Scrolling Enabled' # this probably doesn't need modification
+
+trackball_id=$(xinput list | perl -lne "/${hardware_name}.*id=(\\d+)/ && print \$1")
+
+if [[ -n "$trackball_id" ]]; then
+  scrolling_id=$(xinput list-props "$trackball_id" | perl -lne "/${scrolling_prop} \((\\d+)\)/ && print \$1")
+  current=$(xinput list-props "$trackball_id" | perl -lne "/${scrolling_prop} \\(.*?:\s+(\d+)/ && print \$1")
+
+  scrolling_default=$(xinput list-props "$trackball_id" | perl -lne "/${scrolling_prop} Default \\(.*?:\s+(\d+)/ && print \$1")
+
+  declare -A values=(
+    [fix]=1
+    [off]=0
+    [natural]=1
+    [default]=$scrolling_default
+    [toggle]=$(( ! $current ))
+  )
+
+  newval=${values[${1:-toggle}]}
+  if [[ -z "$newval" ]]; then
+    cat <<.
+Usage: i3-mouse-scroll [ natural | off | default | toggle ]
+
+  If no action is provided, the behavior is 'toggle'. '$1' is not a recognized action.
+
+Actions:
+
+  * natural -- use "natural direction" scrolling, i.e. like a phone touchscreen
+  * default -- use the device's default, whatever that means
+  * off     -- disable natural scroling
+  * toggle  -- switch to the other style
+.
+
+    exit 1
+  fi
+
+  xinput --set-prop "$trackball_id" "$scrolling_id" $newval
+fi
