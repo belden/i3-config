@@ -136,5 +136,10 @@ bindsym $mod+plus exec ~/.config/i3/bin/i3-xfont-scale default; restart
 bindsym $mod+Shift+plus exec ~/.config/i3/bin/i3-xfont-scale up; restart
 bindsym $mod+minus exec ~/.config/i3/bin/i3-xfont-scale down; restart
 
+for_window [class="^deadcells$"] move to workspace 8
+for_window [class="^deadcells$"] floating enable
+for_window [class="^deadcells$"] fullscreen toggle
+
+# my bootstrap sequence
 include init.d/desktop-background.i3c
 include init.d/mouse-natural-scrolling.i3c
