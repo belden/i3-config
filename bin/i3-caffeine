@@ -1,0 +1,48 @@
+#!/bin/bash
+
+behavior=${1:-show};
+
+function i3::status() {
+  perl -lne '
+    BEGIN { ($estar, $screen) = (1,1) }
+
+    $estar = 0 if /DPMS is Disabled/;
+    $screen = 0 if /timeout:\s+0/;
+
+    END {
+      if (!$estar) {
+        if (!$screen) {
+          print "☕";
+        } else {
+          print "???";
+        }
+      } else {
+        print "💤";
+      }
+    }
+  ' <(xset q)
+}
+
+case $behavior in
+  on )
+    xset s on;
+    xset +dpms;
+    ;;
+  off )
+    xset s off;
+    xset -dpms;
+    ;;
+  show )
+    i3::status;
+    ;;
+  toggle )
+    current=$(i3::status);
+    if [[ "$current" == "💤" ]]; then
+      $0 off;
+    else
+      $0 on;
+    fi
+    ;;
+  * )
+    ;;
+esac
