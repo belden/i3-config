@@ -2,6 +2,54 @@
 
 # try hard to force my external monitor on when I come back from idle
 
-xset dpms force on
-sleep .25
-autorandr docked || sleep .25 && autorandr docked
+function i3::autorandr::docked() {
+
+  # The monitors hop around with how xrandr identifies them, which I don't understand. Here's
+  # what I've seen:
+  #
+  #   Dell     Laptop   Notes
+  #   ----     ------   ------
+  #   DP-1     DP-0     Fresh login
+  #   DP-1     DP-2     Displays idle ~30 min and then reawaken
+  #   DP-1     eDP-1    Mid-upgrade, using open-source drivers; switching to nvidia drivers fixed it
+  #
+  # I have no idea why the laptop display bounces around. The physical dimensions only
+  # shows up if the monitor is actually being used, so Dell is "the connected monitor
+  # whose display isn't the size of the laptop's display".
+  #
+  local dell=$(xrandr | grep ' connected' | grep -v '344mm x 194mm' | cut -f 1 -d ' ' | tr 'A-Z' 'a-z')
+  local laptop=$(xrandr | grep '344mm x 194mm' | cut -f 1 -d ' ' | tr 'A-Z' 'a-z')
+
+  # this relies on having an autorandr config already saved
+
+  case "$dell,$laptop" in
+    "dp-1,dp-0" )
+      autorandr docked;
+      return $?;
+      ;;
+    "dp-1,dp-2" )
+      autorandr docked-$dell,$laptop;
+      return $?;
+      ;;
+    *)
+      echo "error: dell $dell, laptop $laptop, no profile to use!" 1>&2;
+      return 1
+      ;;
+  esac
+
+}
+
+action=${1:-docked}; shift
+case $action in
+  docked )
+    xset dpms force on;
+    sleep .25;
+    i3::autorandr::docked || sleep .25 && i3::autorandr::docked;
+    ;;
+  mobile )
+    autorandr mobile;
+    ;;
+  * )
+    echo "Usage: i3-autorandr [mobile | docked]" 1>&2;
+    ;;
+esac
