@@ -28,12 +28,12 @@ function i3::autorandr::docked() {
       return $?;
       ;;
     "dp-1,dp-2" )
-      autorandr docked-$dell,$laptop;
+      autorandr docked:$dell,$laptop;
       return $?;
       ;;
     *)
-      echo "error: dell $dell, laptop $laptop, no profile to use!" 1>&2;
-      return 1
+      i3-nagbar -t error -m "error: i3-autorandr can't fix display: dell $dell, laptop $laptop, no profile to use!" -B 'let me fix it' 'i3-sensible-terminal';
+      exit 1
       ;;
   esac
 
