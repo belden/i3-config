@@ -1,0 +1,16 @@
+#!/bin/bash
+
+case $1 in
+  split)
+    xrandr --setmonitor DP-1-1 1920/298x2160/336+3840+0 DP-1
+    xrandr --setmonitor DP-1-2 1920/299x2160/336+5760+0 none
+    ;;
+  join|undo)
+    xrandr --delmonitor DP-1-2;
+    xrandr --delmonitor DP-1-1;
+    ;;
+  refresh)
+    xrandr --fb 7681x2160
+    xrandr --fb 7680x2160
+    ;;
+esac
