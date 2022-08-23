@@ -117,6 +117,7 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 
 # my experimental layer
 include config.d/tmux-mode.conf
+include config.d/displays-mode.conf
 bindsym $mod+n mode "tmux"
 
 # Start i3bar to display a workspace bar (plus the system information i3status

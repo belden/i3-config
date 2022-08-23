@@ -1,13 +1,26 @@
 #!/bin/bash
 
 case $1 in
-  split)
-    xrandr --setmonitor DP-1-1 1920/298x2160/336+3840+0 DP-1
-    xrandr --setmonitor DP-1-2 1920/299x2160/336+5760+0 none
+  split|2)
+    xrandr --delmonitor DP-1-3-1;
+    xrandr --delmonitor DP-1-3-2;
+    xrandr --delmonitor DP-1-3-3;
+    xrandr --setmonitor DP-1-2-1 1920/298x2160/336+3840+0 DP-1
+    xrandr --setmonitor DP-1-2-2 1920/299x2160/336+5760+0 none
     ;;
-  join|undo)
-    xrandr --delmonitor DP-1-2;
-    xrandr --delmonitor DP-1-1;
+  join|undo|1)
+    xrandr --delmonitor DP-1-2-1;
+    xrandr --delmonitor DP-1-2-2;
+    xrandr --delmonitor DP-1-3-1;
+    xrandr --delmonitor DP-1-3-2;
+    xrandr --delmonitor DP-1-3-3;
+    ;;
+  3)
+    xrandr --delmonitor DP-1-2-1;
+    xrandr --delmonitor DP-1-2-2;
+    xrandr --setmonitor DP-1-3-1 1920/298x1080/168+3840+0 DP-1
+    xrandr --setmonitor DP-1-3-2 1920/298x1080/168+3840+1080 none
+    xrandr --setmonitor DP-1-3-3 1920/299x2160/336+5760+0 none
     ;;
   refresh)
     xrandr --fb 7681x2160
