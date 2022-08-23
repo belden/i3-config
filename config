@@ -10,6 +10,7 @@
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
 set $mod Mod4
+set $bin_path ~/.config/i3/bin
 
 # Font for window titles. Will also be used by the bar unless a different font
 # is used in the bar {} block below.
@@ -129,12 +130,12 @@ bindsym --release Caps_Lock exec pkill -SIGRTMIN+11 i3blocks
 include config.d/swap-mode.conf
 bindsym $mod+Shift+i mark --add "swapee"; mode "swap"
 
-bindsym $mod+Shift+u exec ~/.config/i3/bin/i3-toggle-opacity
+bindsym $mod+Shift+u exec $bin_path/i3-toggle-opacity
 
 # scale fonts -- can't use $mod+0 for default since that's a workspace switcher
-bindsym $mod+plus exec ~/.config/i3/bin/i3-xfont-scale default; restart
-bindsym $mod+Shift+plus exec ~/.config/i3/bin/i3-xfont-scale up; restart
-bindsym $mod+minus exec ~/.config/i3/bin/i3-xfont-scale down; restart
+bindsym $mod+plus exec $bin_path/i3-xfont-scale default; restart
+bindsym $mod+Shift+plus exec $bin_path/i3-xfont-scale up; restart
+bindsym $mod+minus exec $bin_path/i3-xfont-scale down; restart
 
 # my bootstrap sequence
 include init.d/desktop-background.i3c
