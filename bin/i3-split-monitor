@@ -1,29 +1,114 @@
 #!/bin/bash
 
+# Find the external monitor. There's some tedious cleanup with `sed'
+# in order to allow upcoming `IFS=$' ' read ... <<< $foo' to work.
+big_monitor=$(xrandr | \
+  grep -P '(?<!dis)connected' | \
+  grep -v '344mm x 193mm' | \
+  sed '
+   s/connected //;
+   s/(.*) //;
+   s/mm x / /;
+   s/mm$//;
+   s/x/ /g;
+   s/+/ /g;
+  ' \
+)
+
+if [[ -z "$big_monitor" ]]; then
+  echo "No external monitor found"
+  exit 1
+fi
+
+IFS=$' ' read display_name x_pix y_pix x_pix_offset y_pix_offset x_mm y_mm <<< $big_monitor
+
+declare -A d=(
+  # Left dimensions for Left|Right split.
+  # Right dimensions are derived later, via subtraction.
+  [x_pix_left]=$(( $x_pix / 2 ))
+  [x_mm_left]=$(( $x_mm / 2 ))
+  [x_pix_offset_left]=$x_pix_offset
+  [y_pix_left]=$y_pix
+  [y_mm_left]=$(( $y_mm / 2 ))
+  [y_pix_offset_left]=$y_pix_offset
+
+  # Left-Top dimensions for [Left-Top/Left-Bottom]|Right split.
+  # Left-Bottom dimensions are mostly the same - the y-pixel-offset is just different
+  [x_pix_left_top]=$(( $x_pix / 2 ))
+  [x_mm_left_top]=$(( $x_mm / 2 ))
+  [y_pix_left_top]=$(( $y_pix / 2 ))
+  [y_mm_left_top]=$(( $y_mm / 2 ))
+  [y_pix_offset_left_top]=$(( $y_pix_offset / 2 ))
+)
+
+# Right dimensions are derived here via subtraction.
+#
+# Floats get floored in bash math operations (eg: 7 / 2 = 3).
+# We want to make sure that "half of 7" is "3 and 4", not "3 and 3".
+# This ensures that all of the screen real-estate is accounted for.
+d[x_pix_right]=$(( $x_pix - ${d[x_pix_left]} ))
+d[x_mm_right]=$(( $x_mm - ${d[x_mm_left]} ))
+d[x_pix_offset_right]=$(( $(( ${d[x_pix_offset_left]} * 3 )) / 2 )) # bash doesn't like floats; `$(( 300 * 1.5 ))' is busted
+d[y_pix_right]=${d[y_pix_left]}
+d[y_mm_right]=$(( $y_mm - ${d[y_mm_left]} ))
+d[y_pix_offset_right]=${d[y_pix_offset_left]}
+
+declare -A layouts=(
+  [left]=$(printf '%d/%dx%d/%d+%d+%d' \
+    ${d[x_pix_left]} ${d[x_mm_left]} \
+    ${d[y_pix_left]} ${d[y_mm_left]} \
+    ${d[x_pix_offset_left]} ${d[y_pix_offset_left]}
+  )
+  [right]=$(printf '%d/%dx%d/%d+%d+%d' \
+    ${d[x_pix_right]} ${d[x_mm_right]} \
+    ${d[y_pix_right]} ${d[y_mm_right]} \
+    ${d[x_pix_offset_right]} ${d[y_pix_offset_right]}
+  )
+
+  [left_top]=$(printf '%d/%dx%d/%d+%d+%d' \
+    ${d[x_pix_left_top]} ${d[x_mm_left_top]} \
+    ${d[y_pix_left_top]} ${d[y_mm_left_top]} \
+    ${d[x_pix_offset_left]} ${d[y_pix_offset_left_top]}
+  )
+  [left_bottom]=$(printf '%d/%dx%d/%d+%d+%d' \
+    ${d[x_pix_left_top]} ${d[x_mm_left_top]} \
+    ${d[y_pix_left_top]} ${d[y_mm_left_top]} \
+    ${d[x_pix_offset_left]} ${d[y_pix_left_top]}
+  )
+)
+
+Xrandr() {
+  if [[ -n $I3_SPLIT_DEBUG ]]; then
+    echo "xrandr $*"
+  else
+    xrandr $*
+  fi
+}
+
 case $1 in
   1 |join | reset )
-    xrandr --delmonitor DP-1-2-1 > /dev/null;
-    xrandr --delmonitor DP-1-2-2 > /dev/null;
-    xrandr --delmonitor DP-1-3-1 > /dev/null;
-    xrandr --delmonitor DP-1-3-2 > /dev/null;
-    xrandr --delmonitor DP-1-3-3 > /dev/null;
+    Xrandr --delmonitor "${display_name}-2-1" > /dev/null;
+    Xrandr --delmonitor "${display_name}-2-2" > /dev/null;
+    Xrandr --delmonitor "${display_name}-3-1" > /dev/null;
+    Xrandr --delmonitor "${display_name}-3-2" > /dev/null;
+    Xrandr --delmonitor "${display_name}-3-3" > /dev/null;
     ;;
   2 | split )
-    xrandr --delmonitor DP-1-3-1 > /dev/null;
-    xrandr --delmonitor DP-1-3-2 > /dev/null;
-    xrandr --delmonitor DP-1-3-3 > /dev/null;
-    xrandr --setmonitor DP-1-2-1 1920/298x2160/336+3840+0 DP-1
-    xrandr --setmonitor DP-1-2-2 1920/299x2160/336+5760+0 none
+    Xrandr --delmonitor "${display_name}-3-1" > /dev/null;
+    Xrandr --delmonitor "${display_name}-3-2" > /dev/null;
+    Xrandr --delmonitor "${display_name}-3-3" > /dev/null;
+    Xrandr --setmonitor "${display_name}-2-1" "${layouts[left]}" "${display_name}"
+    Xrandr --setmonitor "${display_name}-2-2" "${layouts[right]}" none
     ;;
   3 | split-3)
-    xrandr --delmonitor DP-1-2-1 > /dev/null;
-    xrandr --delmonitor DP-1-2-2 > /dev/null;
-    xrandr --setmonitor DP-1-3-1 1920/298x1080/168+3840+0 DP-1
-    xrandr --setmonitor DP-1-3-2 1920/298x1080/168+3840+1080 none
-    xrandr --setmonitor DP-1-3-3 1920/299x2160/336+5760+0 none
+    Xrandr --delmonitor "${display_name}-2-1" > /dev/null;
+    Xrandr --delmonitor "${display_name}-2-2" > /dev/null;
+    Xrandr --setmonitor "${display_name}-3-1" "${layouts[left_top]}" "${display_name}"
+    Xrandr --setmonitor "${display_name}-3-2" "${layouts[left_bottom]}" none
+    Xrandr --setmonitor "${display_name}-3-3" "${layouts[right]}" none
     ;;
   refresh)
-    xrandr --fb 7681x2160;
-    xrandr --fb 7680x2160;
+    Xrandr --fb 7681x2160;
+    Xrandr --fb 7680x2160;
     ;;
 esac
