@@ -14,9 +14,15 @@ convert /tmp/screenshot.png -blur 0x5 /tmp/screenshot.png
 
 # Waits for i3lock to die or valid fingerprint to kill i3lock
 wait_fingerprint() {
+    let i=0
     while pidof i3lock > /dev/null; do
         if (timeout 5 fprintd-verify | grep -q verify-match); then
             pkill i3lock
+        fi
+        i=$(( $i + 1 ))
+        if [[ $i -eq 3 ]]; then
+          i=0
+          xset dpms force off
         fi
     done
 }
@@ -38,7 +44,7 @@ if [[ -e /dev/fd/${XSS_SLEEP_LOCK_FD:--1} ]]; then
     wait_fingerprint
 else
     trap 'kill %%' TERM INT
-    i3lock -nui /tmp/screenshot.png &
+    i3lock -ni /tmp/screenshot.png &
     wait_fingerprint
 fi
 
