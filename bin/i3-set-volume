@@ -1,0 +1,31 @@
+#!/bin/bash
+
+function refresh_i3_status() {
+  killall -SIGUSR1 i3status 2> /dev/null
+}
+
+function get_volume() {
+  pactl get-sink-volume @DEFAULT_SINK@ | grep -o -P '\d+%' | head -1 | tr -d '%'
+}
+
+function main() {
+  case "$1" in
+    up)
+      pactl set-sink-volume @DEFAULT_SINK@ +10% && refresh_i3_status
+      ;;
+    down)
+      local vol=$(get_volume)
+      if [[ "$vol" -ge 80 ]]; then
+        pactl set-sink-volume @DEFAULT_SINK@ -20% && refresh_i3_status
+      fi
+      ;;
+    mute)
+      pactl set-sink-volume @DEFAULT_SINK@ 0% && refresh_i3_status
+      ;;
+    *)
+      pactl set-sink-volume @DEFAULT_SINK@ 100% && refresh_i3_status
+      ;;
+  esac
+}
+
+main "$@"
