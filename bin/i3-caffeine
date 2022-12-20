@@ -2,6 +2,11 @@
 
 behavior=${1:-show};
 
+function refresh_i3_status() {
+  pkill -SIGRTMIN+11 i3blocks
+  #killall -SIGUSR1 i3status 2> /dev/null
+}
+
 function i3::status() {
   perl -lne '
     BEGIN { ($estar, $screen) = (1,1) }
@@ -24,13 +29,19 @@ function i3::status() {
 }
 
 case $behavior in
-  on )
+  on | tired)
     xset s on;
     xset +dpms;
+    refresh_i3_status;
     ;;
-  off )
+  off | wired)
     xset s off;
     xset -dpms;
+    refresh_i3_status;
+    ;;
+  refresh)
+    refresh_i3_status;
+    i3::status;
     ;;
   show )
     i3::status;

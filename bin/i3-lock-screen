@@ -1,7 +1,8 @@
 #!/bin/bash
 
-scrot -o /tmp/screenshot.png
-convert /tmp/screenshot.png -blur 0x5 /tmp/screenshot.png
+scrot - | convert - -negate -blur 0x5 - > /tmp/screenshot.png
+~/.config/i3/bin/i3-caffeine tired &
+xset dpms force off
 
 # Turn on DND
 #old_dnd="$(xfconf-query -c xfce4-notifyd -p /do-not-disturb)"
