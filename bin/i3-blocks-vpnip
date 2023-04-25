@@ -1,0 +1,4 @@
+#!/bin/bash
+
+ip=$(curl -s ip.brontosaurus.net)
+echo $ip
