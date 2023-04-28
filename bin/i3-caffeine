@@ -1,6 +1,13 @@
 #!/bin/bash
 
 behavior=${1:-show};
+was_clicked=${BLOCK_BUTTON:-0}
+export BLOCK_BUTTON=
+if [[ "$was_clicked" != "0" ]]; then
+  behavior='toggle'
+fi
+
+#echo "caffeine: $behavior -> clicked? $was_clicked" >> /tmp/my.log
 
 function refresh_i3_status() {
   pkill -SIGRTMIN+11 i3blocks
@@ -33,11 +40,13 @@ case $behavior in
     xset s on;
     xset +dpms;
     refresh_i3_status;
+    i3::status;
     ;;
   off | wired)
     xset s off;
     xset -dpms;
     refresh_i3_status;
+    i3::status;
     ;;
   refresh)
     refresh_i3_status;
