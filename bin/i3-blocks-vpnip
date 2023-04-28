@@ -1,4 +1,34 @@
 #!/bin/bash
 
 ip=$(curl -s ip.brontosaurus.net)
-echo $ip
+abuse=$(whois $ip | grep OrgAbuseEmail | head -1 | awk '{ print $2 }')
+echo $abuse 1>&2
+icon=''
+vpn_status=''
+case "$abuse" in
+  abuse@comcast.net)
+    vpn_status="down";
+    icon="🟢";;
+  abuse@amazonaws.com)
+    vpn_status="up";
+    icon="";;
+  *) icon="🟡";;
+esac
+
+was_clicked=${BLOCK_BUTTON:-0}
+action='nothing'
+if [[ "$was_clicked" != "0" ]]; then
+  icon="𝌗";
+  case "$vpn_status" in
+    up)
+      action='user-stop';
+      bl vpn down > /dev/null;;
+    down)
+      action='user-start';
+      bl vpn up > /dev/null;;
+  esac
+fi
+
+echo "$icon"
+
+#echo "$abuse - $icon - $was_clicked - $action" >> /tmp/my.log
