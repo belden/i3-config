@@ -19,8 +19,11 @@ function main() {
         pactl set-sink-volume @DEFAULT_SINK@ -20% && refresh_i3_status
       fi
       ;;
+    unmute)
+      pactl set-sink-mute @DEFAULT_SINK@ 0 && refresh_i3_status
+      ;;
     mute)
-      pactl set-sink-volume @DEFAULT_SINK@ 0% && refresh_i3_status
+      pactl set-sink-mute @DEFAULT_SINK@ 1 && refresh_i3_status
       ;;
     *)
       pactl set-sink-volume @DEFAULT_SINK@ 100% && refresh_i3_status
