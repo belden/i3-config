@@ -6,6 +6,7 @@ function xfont::set() {
 Xft.dpi: $new_dpi
 .
 )
+  i3 restart
 }
 
 function xfont::scale() {
@@ -22,6 +23,7 @@ direction=${1:-up}
 case $direction in
   up ) xfont::scale 11 10 ;;
   down ) xfont::scale 10 11 ;;
+  n) xfont::set $2 ;;
   default) xfont::set 192 ;;
   * ) echo "usage: xfont-scale [up | down]" 1>&2 ;;
 esac
