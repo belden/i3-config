@@ -1,0 +1,41 @@
+#!/bin/bash
+
+function refresh_i3_status() {
+  killall -SIGUSR1 i3status 2> /dev/null
+}
+
+function get_brightness() {
+  out=$((( (( 100 * $(brightnessctl -d intel_backlight g ) )) / $( brightnessctl -d intel_backlight m) )))
+  echo "$out"
+}
+
+function set_brightness() {
+  local mod=$1
+  sudo brightnessctl -d intel_backlight set $mod > /dev/null 2>&1 && refresh_i3_status
+}
+
+function main() {
+  case "$1" in
+    up)
+      set_brightness +10%
+      ;;
+    down)
+      local vol=$(get_brightness)
+      if [[ "$vol" -ge 30 ]]; then
+        set_brightness 10%-
+      fi
+      ;;
+    get)
+      local vol=$(get_brightness)
+      echo "$vol"
+      ;;
+    min)
+      set_brightness 30%
+      ;;
+    max|*)
+      set_brightness 100%
+      ;;
+  esac
+}
+
+main "$@"

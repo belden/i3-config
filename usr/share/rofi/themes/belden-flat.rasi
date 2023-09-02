@@ -1,0 +1,103 @@
+/**
+ * ROFI Color theme - adapted from sidebar.rasi by Dave Davenport
+ * User: Belden Lyman
+ * Copyright: 2022 Belden Lyman
+ */
+* {
+    /*font: "System San Francisco Display 30"; */
+    font: "Mono 30";
+    red:              IndianRed;
+    lightgreen:       rgba ( 136, 204, 34, 100 % );
+    green:            rgba ( 134, 175, 128, 100 % );
+    background-color: transparent;
+    lightred:         rgba ( 204, 85, 51, 100 % );
+    blue:             CornflowerBlue;
+    lightmagenta:     rgba ( 153, 102, 0, 100 % );
+    dark:             rgba ( 28, 28, 28, 100 % );
+    lightblack:       rgba ( 85, 68, 68, 100 % );
+    lightblue:        SkyBlue;
+    black:            rgba ( 61, 53, 42, 100 % );
+    lightwhite:       rgba ( 221, 204, 187, 100 % );
+    cyan:             LightSteelBlue;
+    magenta:          BurlyWood;
+    lightyellow:      rgba ( 255, 167, 93, 100 % );
+    text-color:       rgba ( 255, 238, 221, 100 % );
+    white:            rgba ( 187, 170, 153, 100 % );
+    yellow:           rgba ( 232, 174, 91, 100 % );
+    lightcyan:        LightSteelBlue;
+    highlight:        bold White;
+}
+window {
+//    width:      50em ;
+    height:     100% ;
+ //   location: west;
+ //   anchor: west;
+    border:     0px 2px 0px 0px ;
+    text-color: var(lightwhite);
+}
+mode-switcher {
+    padding:          0px ;
+    background-color: var(lightblack);
+    border:           2px 0px 0px ;
+}
+button selected {
+    border-color: var(lightgreen);
+    text-color:   var(lightgreen);
+}
+inputbar {
+    padding:          0px ;
+    background-color: var(lightblack);
+    text-color:       var(lightgreen);
+    border:           0px 0px 2px ;
+}
+mainbox {
+    background-color: rgba ( 28, 28, 28, 75% );
+    expand:           true;
+    spacing:          0em ;
+}
+listview {
+    padding: 5em 5em 5em 5em ;
+    dynamic: false;
+    lines:   0;
+}
+
+element-icon {
+    size: 64px;
+    padding: 5px 1em 5px 0em;
+}
+
+element-text {
+    background-color: inherit;
+    text-color:       inherit;
+    padding: 5px 0em 5px 0em;
+}
+element selected.normal {
+    background-color: var(blue);
+}
+element selected.active {
+    background-color: var(lightblue);
+    text-color:       var(dark);
+}
+element selected.urgent {
+    background-color: var(lightred);
+    text-color:       var(dark);
+}
+element normal.active {
+    text-color: var(lightblue);
+}
+element normal.urgent {
+    text-color: var(lightred);
+}
+element alternate.active {
+    text-color: var(lightblue);
+}
+element alternate.urgent {
+    text-color: var(lightred);
+}
+error-message {
+    padding:          0em ;
+    background-color: Red;
+    expand:           true;
+    border-color:     DarkRed;
+    border:           2px ;
+}
