@@ -1,5 +1,5 @@
 #!/bin/bash
 
 cd ~/.config/rofi
-git checkout $(git branch | rofi -dmenu -font 'Mono 30' -theme /usr/share/rofi/themes/belden-flat.rasi | cut -b 2-)
+git checkout $(git branch | rofi -dmenu -font 'Mono 30' -theme ~/.config/i3/usr/share/rofi/themes/belden-flat.rasi | cut -b 2-)
 rofi -show combi
