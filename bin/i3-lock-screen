@@ -15,16 +15,19 @@ xset dpms force off
 
 # Waits for i3lock to die or valid fingerprint to kill i3lock
 wait_fingerprint() {
-    let i=0
+#   let i=0
     while pidof i3lock > /dev/null; do
+#       start=$(date +%s)
         if (timeout 5 fprintd-verify | grep -q verify-match); then
             pkill i3lock
         fi
-        i=$(( $i + 1 ))
-        if [[ $i -eq 3 ]]; then
-          i=0
-          xset dpms force off
-        fi
+#       end=$(date +%s)
+#       i=$(( $i + 1 ))
+#       if [[ $i -eq 5 ]]; then
+#         i=0
+#         sleep $(( 5 - $(( $end - $start )) ))
+#         xset dpms force off
+#       fi
     done
 }
 
