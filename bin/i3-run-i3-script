@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+
+cd ~/.config/i3/
+
+i3::rofi-cli() {
+  rofi \
+    -dmenu \
+    -font 'Mono 20' \
+    -theme ~/.config/i3/usr/share/rofi/themes/belden-flat.rasi
+}
+
+program=$(
+  echo bin/* | \
+    tr ' ' '\n' | \
+    grep -vE 'i3-run-i3-script|atmux' | \
+    i3::rofi-cli
+)
+
+if [[ -n $program ]]; then
+  args=$(
+    i3::rofi-cli
+  )
+
+  if [[ -n $args ]]; then
+    $program $args
+  fi
+fi
