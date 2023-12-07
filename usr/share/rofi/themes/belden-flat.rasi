@@ -5,7 +5,7 @@
  */
 * {
     /*font: "System San Francisco Display 30"; */
-    font: "Mono 30";
+//    font: "Mono 15";
     red:              IndianRed;
     lightgreen:       rgba ( 136, 204, 34, 100 % );
     green:            rgba ( 134, 175, 128, 100 % );
