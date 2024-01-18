@@ -1,19 +1,29 @@
 #!/bin/bash
 
-ip=$(curl -s ip.brontosaurus.net)
-abuse=$(whois $ip | grep OrgAbuseEmail | head -1 | awk '{ print $2 }')
-echo $abuse 1>&2
 icon=''
 vpn_status=''
-case "$abuse" in
-  abuse@comcast.net)
-    vpn_status="down";
-    icon="🟢";;
-  abuse@amazonaws.com)
-    vpn_status="up";
-    icon="";;
-  *) icon="🟡";;
-esac
+
+if which nordvpn > /dev/null 2>&1; then
+  if nordvpn status | grep -q 'Status: Connected'; then
+    vpn_status='up'
+    icon="";
+  fi
+fi
+
+if [[ -z $icon ]]; then
+  ip=$(curl -s ip.brontosaurus.net)
+  abuse=$(whois $ip | grep OrgAbuseEmail | head -1 | awk '{ print $2 }')
+  echo $abuse 1>&2
+  case "$abuse" in
+    abuse@comcast.net)
+      vpn_status="down";
+      icon="🟢";;
+    abuse@amazonaws.com)
+      vpn_status="up";
+      icon="";;
+    *) icon="🟡";;
+  esac
+fi
 
 was_clicked=${BLOCK_BUTTON:-0}
 action='nothing'
