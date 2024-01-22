@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+
+declare -a muted=($(pactl list | grep -E 'Sink|Mute' | grep -B1 'Mute: yes' | grep Sink | sed 's,Sink #,,'))
+for sink in ${muted[@]}; do
+  pactl set-sink-mute $sink 0
+done
