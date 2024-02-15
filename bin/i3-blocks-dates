@@ -1,4 +1,4 @@
 #!/bin/bash
 
 format='+%Y-%m-%d %H:%M:%S'
-echo $(date "$format"; TZ=America/New_York date "+(%H:%M:%S)")
+echo $(date "$format")
