@@ -29,6 +29,9 @@ function main() {
       local vol=$(get_brightness)
       echo "$vol"
       ;;
+    night)
+      set_brightness 5%
+      ;;
     min)
       set_brightness 30%
       ;;
