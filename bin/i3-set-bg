@@ -1,8 +1,21 @@
 #!/bin/bash
 
-gnome_bg_uri=$(gsettings get org.gnome.desktop.background picture-uri | tr -d "'" | sed 's,file://,,')
+case $1 in
+  pick)
+    pushd /usr/share/backgrounds > /dev/null
+    echo * | tr ' ' '\n' | grep -Ei 'jpg|png|jpeg' | \
+      fzf --cycle \
+        --preview 'feh --bg-scale ./{}' \
+        --bind 'alt-s:execute(echo gsettings set org.gnome.desktop.background picture-uri file://$(readlink -f {}))' \
+        --header 'alt-s -- set as default'
 
-chosen=${1:-$gnome_bg_uri}
+    popd > /dev/null
+    ;;
+  *)
+    gnome_bg_uri=$(gsettings get org.gnome.desktop.background picture-uri | tr -d "'" | sed 's,file://,,')
+    chosen=${1:-$gnome_bg_uri}
 
-#feh --no-xinerama --bg-center $chosen
-feh --bg-scale $chosen
+    #feh --no-xinerama --bg-center $chosen
+    feh --bg-scale $chosen
+  ;;
+esac
