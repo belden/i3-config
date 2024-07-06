@@ -9,7 +9,8 @@
 #
 # Please see https://i3wm.org/docs/userguide.html for a complete reference!
 
-set $mod Mod4
+set $mod Mod3
+set $super Mod4
 set $bin_path ~/.config/i3/bin
 
 # Font for window titles. Will also be used by the bar unless a different font
@@ -124,6 +125,7 @@ bindsym $mod+Shift+e exec "i3-nagbar -t warning -m 'You pressed the exit shortcu
 include config.d/tmux-mode.conf
 include config.d/displays-mode.conf
 bindsym $mod+n mode "tmux"
+bindsym $super+n mode "tmux"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
 # finds out, if available)
