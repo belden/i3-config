@@ -35,6 +35,10 @@ exec --no-startup-id dex --autostart --environment i3
 # and nm-applet is a desktop environment-independent system tray GUI for it.
 exec --no-startup-id nm-applet
 
+# blueman-applet doe bluetoothy things maybe? lol
+# https://thomasdegraaff.eu/notes/2022/05/06/i3-bluetooth-applet/
+exec --no-startup-id blueman-applet &
+
 include config.d/multimedia-keys.conf
 include config.d/colors.conf
 
