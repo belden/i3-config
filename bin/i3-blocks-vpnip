@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# detect pritunl
+if ip address show tun0 > /dev/null 2>&1; then
+  echo ""
+  exit 0
+fi
+
 ip=$(curl -s ip.brontosaurus.net)
 abuse=$(whois $ip | grep OrgAbuseEmail | head -1 | awk '{ print $2 }')
 echo $abuse 1>&2
