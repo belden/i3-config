@@ -1,12 +1,15 @@
 #!/bin/bash
 
 case $1 in
+  show)
+    gsettings get org.gnome.desktop.background picture-uri | tr -d "'" | sed 's,file://,,'
+    ;;
   pick)
     pushd /usr/share/backgrounds > /dev/null
     echo * | tr ' ' '\n' | grep -Ei 'jpg|png|jpeg' | \
       fzf --cycle \
         --preview 'feh --bg-scale ./{}' \
-        --bind 'alt-s:execute(echo gsettings set org.gnome.desktop.background picture-uri file://$(readlink -f {}))' \
+        --bind $'alt-s:execute(gsettings set org.gnome.desktop.background picture-uri file://$(readlink -f {}))' \
         --header 'alt-s -- set as default'
 
     popd > /dev/null
