@@ -28,6 +28,13 @@ wait_fingerprint() {
     done
 }
 
+ensure_screen_off() {
+  while pidof i3lock > /dev/null; do
+    xset dpms force off
+    sleep 300
+  done
+}
+
 # Code taken from xss-lock transfer sleep lock example
 if [[ -e /dev/fd/${XSS_SLEEP_LOCK_FD:--1} ]]; then
     kill_i3lock() {
@@ -42,11 +49,14 @@ if [[ -e /dev/fd/${XSS_SLEEP_LOCK_FD:--1} ]]; then
     # now close our fd (only remaining copy) to indicate we're ready to sleep
     exec {XSS_SLEEP_LOCK_FD}<&-
 
-    wait_fingerprint
+    ensure_screen_off
+
+    #wait_fingerprint
 else
     trap 'kill %%' TERM INT
     i3lock -ni /tmp/screenshot.png &
-    wait_fingerprint
+    ensure_screen_off
+    #wait_fingerprint
 fi
 
 # Set settings back to what they were before
