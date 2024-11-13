@@ -1,4 +1,3 @@
 #!/bin/bash
 
-format='+%Y-%m-%d %H:%M:%S'
-echo $(date "$format"; TZ=America/New_York date "+(%H:%M:%S)")
+printf '%s (%s %s)' "$(date "+%Y-%m-%d %H:%M:%S %Z")" "$(TZ=America/Denver date "+%H:%M:%S %Z")" "$(TZ=America/New_York date "+%H:%M:%S %Z")"
