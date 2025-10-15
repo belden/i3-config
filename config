@@ -145,5 +145,8 @@ bindsym $mod+plus exec $bin_path/i3-xfont-scale default; restart
 bindsym $mod+Shift+plus exec $bin_path/i3-xfont-scale up; restart
 bindsym $mod+minus exec $bin_path/i3-xfont-scale down; restart
 
+bindsym $mod+Tab scratchpad show
+bindsym $mod+Shift+Tab move scratchpad
+
 # my bootstrap sequence
 include init.d/_bootstrap.i3c
