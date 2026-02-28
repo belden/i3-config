@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+export PKG_CONFIG_PATH=/usr/lib/x86_64-linux-gnu/pkgconfig:$PKG_CONFIG_PATH
+export DISPLAY=:0
+export XAUTHORITY=/run/user/1000/gdm/Xauthority
+
+current=$(ibus engine)
+
+if [[ "$current" == "stt" ]]; then
+    ibus engine xkb:us::eng
+elif ibus list-engine | grep -qE "^[ ]*stt "; then
+    ibus engine stt
+else
+    ibus engine xkb:us::eng
+fi
+
+xmodmap -e "clear mod3"
+xmodmap -e "remove mod1 = Alt_R"
+xmodmap -e "add mod3 = Alt_R"

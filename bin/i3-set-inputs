@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+# start ibus-daemon
+/usr/bin/ibus-daemon --xim --daemonize &
+
+# wait until ibus-daemon comes up
+while ! ps -ef | grep -q '[i]bus-daemon --xim --daemonize'; do
+  sleep 1
+done
+
+# ~/.xinputrc contents duplicated here
+{
+  # Clear ISO_Level5_shift from mod3
+  /usr/bin/xmodmap -e "clear mod3"
+
+  # Move Alt_R from mod1...
+  /usr/bin/xmodmap -e "remove mod1 = Alt_R"
+
+  # ...mod3
+  /usr/bin/xmodmap -e "add mod3 = Alt_R"
+}
