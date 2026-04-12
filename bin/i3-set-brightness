@@ -1,17 +1,22 @@
 #!/bin/bash
 
+device=amdgpu_bl1
+
 function refresh_i3_status() {
   killall -SIGUSR1 i3status 2> /dev/null
 }
 
 function get_brightness() {
-  out=$((( (( 100 * $(brightnessctl -d intel_backlight g ) )) / $( brightnessctl -d intel_backlight m) )))
-  echo "$out"
+  brightness=$(brightnessctl -d $device g)
+  brightness=$(( $brightness * 100 ))
+  max=$(brightnessctl -d $device m)
+  amt=$(( $brightness / $max ))
+  echo "$amt"
 }
 
 function set_brightness() {
   local mod=$1
-  sudo brightnessctl -d intel_backlight set $mod > /dev/null 2>&1 && refresh_i3_status
+  sudo brightnessctl -d $device set $mod > /dev/null 2>&1 && refresh_i3_status
 }
 
 function main() {
