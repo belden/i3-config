@@ -1,0 +1,25 @@
+#!/bin/bash
+
+device=amdgpu_bl1
+
+tool="/home/belden/.config/i3/bin/i3-set-brightness"
+
+toggle_brightness() {
+  current="$($tool get)"
+  if [[ "$current" == "100%" ]]; then
+    $tool min # already at max, set to min
+  else
+    $tool max # not at max, set it
+  fi
+}
+
+if [[ -n "$BLOCK_BUTTON" ]]; then
+
+  case "$BLOCK_BUTTON" in
+    1) toggle_brightness;; # left click: toggle max/min
+    4) $tool up ;; # scroll up, increase
+    5) $tool down ;; # scroll down, decrease
+  esac
+fi
+
+$tool get

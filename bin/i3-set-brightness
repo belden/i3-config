@@ -16,23 +16,28 @@ function get_brightness() {
 
 function set_brightness() {
   local mod=$1
-  sudo brightnessctl -d $device set $mod > /dev/null 2>&1 && refresh_i3_status
+  /usr/bin/brightnessctl -d $device set $mod > /dev/null 2>&1 && refresh_i3_status
 }
 
 function main() {
+  local vol=$(get_brightness)
+
   case "$1" in
     up)
-      set_brightness +10%
+      if [[ "$vol" -le 99 ]]; then
+        next=$(( $vol + 10 ))
+        set_brightness "$next%"
+      fi
       ;;
     down)
-      local vol=$(get_brightness)
-      if [[ "$vol" -ge 30 ]]; then
-        set_brightness 10%-
+      if [[ "$vol" -ge 40 ]]; then
+        next=$(( $vol - 10 ))
+        set_brightness "$next%"
       fi
       ;;
     get)
       local vol=$(get_brightness)
-      echo "$vol"
+      echo "$vol%"
       ;;
     min)
       set_brightness 30%
