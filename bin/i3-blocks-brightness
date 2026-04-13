@@ -22,4 +22,7 @@ if [[ -n "$BLOCK_BUTTON" ]]; then
   esac
 fi
 
-$tool get
+monitor_count=$(xrandr | grep -Pic '\bconnected')
+if [[ "$monitor_count" -eq 1 ]]; then
+  echo "💡 $($tool get)"
+fi
