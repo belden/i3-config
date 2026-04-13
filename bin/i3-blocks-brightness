@@ -2,7 +2,7 @@
 
 device=amdgpu_bl1
 
-tool="/home/belden/.config/i3/bin/i3-set-brightness"
+tool="$HOME/.config/i3/bin/i3-set-brightness"
 
 toggle_brightness() {
   current="$($tool get)"
