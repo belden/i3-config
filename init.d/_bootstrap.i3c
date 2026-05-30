@@ -3,3 +3,4 @@ include ./desktop-background.i3c
 include ./mouse-natural-scrolling.i3c
 include ./polkit.i3c
 include ./arandr.i3c
+include ./terminator.i3c
