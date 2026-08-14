@@ -1,3 +1,25 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-printf '%s (%s | %s)' "$(date "+%Y-%m-%d %H:%M:%S %Z")" "$(TZ=America/Denver date "+%H:%M:%S %Z")" "$(TZ=America/New_York date "+%H:%M:%S %Z")"
+declare -a tzs
+
+# tzs+=(America/Denver)
+# tzs+=(America/New_York)
+
+declare -a dates
+function dodate() { date "+%Y-%m-%d %H:%M:%S %Z"; }
+dates+=("$(dodate)")
+
+declare -a extra_fmt
+for tz in "${tzs[@]}"; do
+  dates+=("$(TZ=$tz dodate)")
+  extra_fmt+=("%s")
+done
+
+fmt="%s"
+if [[ "${#extra_fmt}" -ge 1 ]]; then
+  x=$(printf '%s | ' "${extra_fmt[@]}")
+  x=${x% | }
+  fmt="$fmt ($x)"
+fi
+
+printf "$fmt" "${dates[@]}"
