@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-device=amdgpu_bl1
+device=$(brightnessctl | grep -Po 'amdgpu_bl1|intel_backlight')
 
 function refresh_i3_status() {
   killall -SIGUSR1 i3status 2> /dev/null
