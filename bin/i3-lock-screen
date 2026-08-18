@@ -15,16 +15,33 @@ xset dpms force off
 
 # Waits for i3lock to die or valid fingerprint to kill i3lock
 wait_fingerprint() {
-    let i=0
     while pidof i3lock > /dev/null; do
+        # try a few times match a fingerprint. we deliberately unroll
+        # a `for {1..5}; do ...; done` loop here since the nested loop
+        # version was buggy, and this function is difficult to debug
+        # since the computer is locked when we want to debug it
         if (timeout 5 fprintd-verify | grep -q verify-match); then
             pkill i3lock
+            break
         fi
-        i=$(( $i + 1 ))
-        if [[ $i -eq 3 ]]; then
-          i=0
-          xset dpms force off
+        if (timeout 5 fprintd-verify | grep -q verify-match); then
+            pkill i3lock
+            break
         fi
+        if (timeout 5 fprintd-verify | grep -q verify-match); then
+            pkill i3lock
+            break
+        fi
+        if (timeout 5 fprintd-verify | grep -q verify-match); then
+            pkill i3lock
+            break
+        fi
+        if (timeout 5 fprintd-verify | grep -q verify-match); then
+            pkill i3lock
+            break
+        fi
+
+        xset dpms force off
     done
 }
 
@@ -44,10 +61,10 @@ if [[ -e /dev/fd/${XSS_SLEEP_LOCK_FD:--1} ]]; then
     trap kill_i3lock TERM INT
 
     # we have to make sure the locker does not inherit a copy of the lock fd
-    i3lock -ui /tmp/screenshot.png {XSS_SLEEP_LOCK_FD}<&-
+    i3lock -ui /tmp/screenshot.png ${XSS_SLEEP_LOCK_FD}<&-
 
     # now close our fd (only remaining copy) to indicate we're ready to sleep
-    exec {XSS_SLEEP_LOCK_FD}<&-
+    exec ${XSS_SLEEP_LOCK_FD}<&-
 
     ensure_screen_off
 
