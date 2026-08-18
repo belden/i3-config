@@ -126,6 +126,7 @@ include config.d/tmux-mode.conf
 include config.d/displays-mode.conf
 include config.d/brightness-mode.conf
 bindsym $super+n mode "tmux"
+bindsym $mod+n mode "tmux"
 bindsym $mod+b mode "💡"
 
 # Start i3bar to display a workspace bar (plus the system information i3status
